@@ -166,10 +166,15 @@
 		@(rf/subscribe [:__figwheel_counter])
 		[:g {:transform "translate(185,1)"
 			 :on-click  close-application
-			 :cursor "pointer"}
-		 [:rect {:x       0 :y 0 :width 12 :height 12
+			 :cursor    "pointer"
+			 :class     "hidden-print"}
+		 [:rect {:x       0
+				 :y       0
+				 :width   12
+				 :height  12
 				 :opacity 1
-				 :fill    "white"}]
+				 :fill    "white"
+				 }]
 		 [:path {:stroke       "grey"
 				 :fill         "none"
 				 :stroke-width "1px"

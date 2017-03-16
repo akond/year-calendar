@@ -11,14 +11,7 @@
 
 (application/register-application view/calendar "application_calendar")
 
-;(defn application-calendar []
-;	(calendar)
-;	false)
-;
-;(set! js/application_calendar application-calendar)
-
 (defn on-js-reload []
-	;(js/console.log  ($ :body))
 	(swap! handlers/app-state update-in [:__figwheel_counter] inc))
 
 

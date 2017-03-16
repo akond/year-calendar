@@ -15,6 +15,7 @@
 		(doall (map #(set! (.-disabled %) disabled) @style-sheets))))
 
 
+
 (defn register-application [application html-id]
 	(assert (fn? application))
 
@@ -28,7 +29,11 @@
 							   container
 							   (.appendChild target (doto (.createElement js/document "div")
 														(-> (.setAttribute "id" id))))
-							   )))]
+							   )))
+
+				   (install-own-stylesheet []
+					   (let [css-string "@media print {.hidden-print {display: none;visibility:hidden;}}"]
+						   (goog.cssom.addCssText css-string)))]
 
 			   (let [body (-> ($ js/document :body))
 					 body-children (-> body (goog.dom.getChildren))
@@ -39,21 +44,24 @@
 													  (contains? #{"SCRIPT"} ($ v :tagName))
 													  (not= "" ($ v :id))))))
 									 js->clj)
-					 application-node (appended-container body)]
+					 application-node (appended-container body)
+					 app-stylesheet (atom)]
 
 				   (letfn [(toggle-site-content []
 							   (doseq [node content-div]
-								   (js/console.log node)
 								   (toggle-css-style node "display" "block" "none")))
 
 						   (stop-application []
+							   (goog.dom.removeNode @app-stylesheet)
 							   (turn-css :on)
 							   (reagent/unmount-component-at-node application-node)
 							   (toggle-site-content))
 
 						   (start-application []
 							   (toggle-site-content)
+
 							   (turn-css :off)
+							   (reset! app-stylesheet (install-own-stylesheet))
 							   (reagent/render-component [(application (fn [] (js/setTimeout stop-application 10)))]
 														 application-node))]
 
